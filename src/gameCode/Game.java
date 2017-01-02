@@ -52,7 +52,6 @@ public class Game extends Canvas {
 	
 	public Game(){
 		/**frames are windows*/
-
 		JFrame container = new JFrame("Space Invaders 101");
 		JPanel panel = (JPanel) container.getContentPane();
 		panel.setPreferredSize(new Dimension(800,600));

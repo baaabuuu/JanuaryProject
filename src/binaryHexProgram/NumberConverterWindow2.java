@@ -3,26 +3,27 @@ package binaryHexProgram;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 /** 
  * This program is used to convert between hexadecimal, binary and decimal numbers
- * After typing in a number and the user uses a document listener.
- * This turnt out to be very inefficent, as it whenever it checked the input it would update the other values.
+ * After typing in a number and the user hits enter the values in the other fields will change
+ * if the value is legal.
  * @author s164166@student.dtu.dk
 */
-public class NumberConverterWindow1 implements ActionListener, FocusListener
+public class NumberConverterWindow2 implements ActionListener
 {
 	//our components for the window.
 	private JTextField bina, deci, hexa;
-	private String currentFocus, currVal;
-	public NumberConverterWindow1()
+	
+	public NumberConverterWindow2()
 	{
+		//our textfields,
+		bina	= new JTextField(50);
+		hexa	= new JTextField(50);
+		deci	= new JTextField(50);
+		
 		//basic stuff for our container
 		JFrame container = new JFrame("Number Conversion 101");
 		
@@ -30,10 +31,6 @@ public class NumberConverterWindow1 implements ActionListener, FocusListener
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		
 		container.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//our textfields,
-		bina	= new JTextField(50);
-		hexa	= new JTextField(50);
-		deci	= new JTextField(50);
 		
 		bina.setAlignmentX(Component.CENTER_ALIGNMENT);
 		hexa.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -42,14 +39,6 @@ public class NumberConverterWindow1 implements ActionListener, FocusListener
 		bina.addActionListener(this);
 		hexa.addActionListener(this);
 		deci.addActionListener(this);
-		
-		bina.getDocument().addDocumentListener(new DocuListen());
-		hexa.getDocument().addDocumentListener(new DocuListen());
-		deci.getDocument().addDocumentListener(new DocuListen());
-
-		bina.addFocusListener(this);
-		hexa.addFocusListener(this);
-		deci.addFocusListener(this);
 		
 		panel.add(new Label("Binary:"));
 		panel.add(bina);
@@ -67,7 +56,7 @@ public class NumberConverterWindow1 implements ActionListener, FocusListener
 	
 	public static void main(String args[])
 	{
-		 new NumberConverterWindow1(); 
+		 new NumberConverterWindow2(); 
 	}
 	/**
 	 * our action listener taking the values and putting them in
@@ -132,69 +121,4 @@ public class NumberConverterWindow1 implements ActionListener, FocusListener
 	{
 		return Integer.toString(Integer.parseInt(val,2));
 	}
-	
-	
-	class DocuListen implements DocumentListener { 
-        public void insertUpdate(DocumentEvent e) {
-            updateLog(e);
-        }
-        public void removeUpdate(DocumentEvent e) {
-            updateLog(e);
-        }
-        public void changedUpdate(DocumentEvent e) {
-        	updateLog(e);
-        }
- 
-        public void updateLog(DocumentEvent e)
-        {
-        	Runnable doHighlight = new Runnable() {
-	            @Override
-	            public void run()
-	            {
-	              	if (currentFocus.equals("bina") && bina.getText().matches("[01]+"))
-	            	{
-	              		currVal = bina.getText();
-	            		deci.setText(convertBinatoDeci(bina.getText()));
-	            		hexa.setText(convertToHexa(deci.getText()));	
-	            	} 
-	            	else if (currentFocus.equals("hexa") && hexa.getText().matches("-?[0-9a-fA-F]+"))
-	            	{
-	            		currVal = hexa.getText();
-	            		deci.setText(convertToDeci(hexa.getText()));
-	            		bina.setText(convertToBina(deci.getText()));
-	            	}
-	            	else if (currentFocus.equals("deci") && deci.getText().matches("-?\\d+(\\.\\d+)?"))
-	            	{
-	            		currVal = deci.getText();
-	            		hexa.setText(convertToHexa(deci.getText()));
-	            		bina.setText(convertToBina(deci.getText()));
-	            	}
-            }
-            };       
-            SwingUtilities.invokeLater(doHighlight);
-            
-        }
-    }
-
-
-	public void focusGained(FocusEvent event) {
-		if (event.getSource() == bina)
-		{
-			currentFocus = "bina";
-			currVal = bina.getText();
-		} else if (event.getSource() == hexa)
-		{
-			currentFocus = "hexa";
-			currVal = hexa.getText();
-		} else if (event.getSource() == deci)
-		{
-			currVal = deci.getText();
-			currentFocus = "deci";
-		}		
-	}
-
-	@Override
-	//we do not use this function but since we implement it, it has to be here
-	public void focusLost(FocusEvent arg0) {}
-	
 }
